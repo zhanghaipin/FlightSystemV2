@@ -1,0 +1,675 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.flight.mapper.FlightMapper" >
+
+	<select id="selectDistance" resultType="com.flight.bean.CityDistance">
+		select distinct dep_city acity,dep_city_code acityCode,arr_city bcity,arr_city_code bcityCode,distance from flight
+	</select>
+
+  <resultMap id="BaseResultMap" type="com.flight.bean.Flight" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="flight_code" property="flightCode" jdbcType="VARCHAR" />
+    <result column="flight_type" property="flightType" jdbcType="VARCHAR" />
+    <result column="cabin_type" property="cabinType" jdbcType="VARCHAR" />
+    <result column="plane_type" property="planeType" jdbcType="VARCHAR" />
+    <result column="time_use" property="timeUse" jdbcType="INTEGER" />
+    <result column="build_price" property="buildPrice" jdbcType="INTEGER" />
+    <result column="stop" property="stop" jdbcType="INTEGER" />
+    <result column="stop_city" property="stopCity" jdbcType="VARCHAR" />
+    <result column="comment" property="comment" jdbcType="VARCHAR" />
+    <result column="base_price" property="basePrice" jdbcType="INTEGER" />
+    <result column="discount" property="discount" jdbcType="INTEGER" />
+    <result column="true_price" property="truePrice" jdbcType="INTEGER" />
+    <result column="ticket_num" property="ticketNum" jdbcType="INTEGER" />
+    <result column="dep_city" property="depCity" jdbcType="VARCHAR" />
+    <result column="dep_city_code" property="depCityCode" jdbcType="VARCHAR" />
+    <result column="dep_airport" property="depAirport" jdbcType="VARCHAR" />
+    <result column="dep_airport_code" property="depAirportCode" jdbcType="VARCHAR" />
+    <result column="dep_term" property="depTerm" jdbcType="VARCHAR" />
+    <result column="arr_city" property="arrCity" jdbcType="VARCHAR" />
+    <result column="arr_city_code" property="arrCityCode" jdbcType="VARCHAR" />
+    <result column="arr_airport" property="arrAirport" jdbcType="VARCHAR" />
+    <result column="arr_airport_code" property="arrAirportCode" jdbcType="VARCHAR" />
+    <result column="arr_term" property="arrTerm" jdbcType="VARCHAR" />
+    <result column="company" property="company" jdbcType="VARCHAR" />
+    <result column="company_code" property="companyCode" jdbcType="VARCHAR" />
+    <result column="dep_date" property="depDate" jdbcType="VARCHAR" />
+    <result column="dep_time" property="depTime" jdbcType="VARCHAR" />
+    <result column="arr_date" property="arrDate" jdbcType="VARCHAR" />
+    <result column="arr_time" property="arrTime" jdbcType="VARCHAR" />
+    <result column="stop_airport" property="stopAirport" jdbcType="VARCHAR" />
+    <result column="meal" property="meal" jdbcType="INTEGER" />
+    <result column="distance" property="distance" jdbcType="INTEGER" />
+    <result column="punctuality" property="punctuality" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, flight_code, flight_type, cabin_type, plane_type, time_use, build_price, stop, 
+    stop_city, comment, base_price, discount, true_price, ticket_num, dep_city, dep_city_code, 
+    dep_airport, dep_airport_code, dep_term, arr_city, arr_city_code, arr_airport, arr_airport_code, 
+    arr_term, company, company_code, dep_date, dep_time, arr_date, arr_time, stop_airport, 
+    meal, distance, punctuality
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.flight.bean.FlightExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from flight
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from flight
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from flight
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.flight.bean.FlightExample" >
+    delete from flight
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.flight.bean.Flight"  useGeneratedKeys="true" keyProperty="id">
+    insert into flight (flight_code, flight_type, 
+      cabin_type, plane_type, time_use, 
+      build_price, stop, stop_city, 
+      comment, base_price, discount, 
+      true_price, ticket_num, dep_city, 
+      dep_city_code, dep_airport, dep_airport_code, 
+      dep_term, arr_city, arr_city_code, 
+      arr_airport, arr_airport_code, arr_term, 
+      company, company_code, dep_date, 
+      dep_time, arr_date, arr_time, 
+      stop_airport, meal, distance, 
+      punctuality)
+    values (#{flightCode,jdbcType=VARCHAR}, #{flightType,jdbcType=VARCHAR}, 
+      #{cabinType,jdbcType=VARCHAR}, #{planeType,jdbcType=VARCHAR}, #{timeUse,jdbcType=INTEGER}, 
+      #{buildPrice,jdbcType=INTEGER}, #{stop,jdbcType=INTEGER}, #{stopCity,jdbcType=VARCHAR}, 
+      #{comment,jdbcType=VARCHAR}, #{basePrice,jdbcType=INTEGER}, #{discount,jdbcType=INTEGER}, 
+      #{truePrice,jdbcType=INTEGER}, #{ticketNum,jdbcType=INTEGER}, #{depCity,jdbcType=VARCHAR}, 
+      #{depCityCode,jdbcType=VARCHAR}, #{depAirport,jdbcType=VARCHAR}, #{depAirportCode,jdbcType=VARCHAR}, 
+      #{depTerm,jdbcType=VARCHAR}, #{arrCity,jdbcType=VARCHAR}, #{arrCityCode,jdbcType=VARCHAR}, 
+      #{arrAirport,jdbcType=VARCHAR}, #{arrAirportCode,jdbcType=VARCHAR}, #{arrTerm,jdbcType=VARCHAR}, 
+      #{company,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, #{depDate,jdbcType=VARCHAR}, 
+      #{depTime,jdbcType=VARCHAR}, #{arrDate,jdbcType=VARCHAR}, #{arrTime,jdbcType=VARCHAR}, 
+      #{stopAirport,jdbcType=VARCHAR}, #{meal,jdbcType=INTEGER}, #{distance,jdbcType=INTEGER}, 
+      #{punctuality,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.flight.bean.Flight" >
+    insert into flight
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="flightCode != null" >
+        flight_code,
+      </if>
+      <if test="flightType != null" >
+        flight_type,
+      </if>
+      <if test="cabinType != null" >
+        cabin_type,
+      </if>
+      <if test="planeType != null" >
+        plane_type,
+      </if>
+      <if test="timeUse != null" >
+        time_use,
+      </if>
+      <if test="buildPrice != null" >
+        build_price,
+      </if>
+      <if test="stop != null" >
+        stop,
+      </if>
+      <if test="stopCity != null" >
+        stop_city,
+      </if>
+      <if test="comment != null" >
+        comment,
+      </if>
+      <if test="basePrice != null" >
+        base_price,
+      </if>
+      <if test="discount != null" >
+        discount,
+      </if>
+      <if test="truePrice != null" >
+        true_price,
+      </if>
+      <if test="ticketNum != null" >
+        ticket_num,
+      </if>
+      <if test="depCity != null" >
+        dep_city,
+      </if>
+      <if test="depCityCode != null" >
+        dep_city_code,
+      </if>
+      <if test="depAirport != null" >
+        dep_airport,
+      </if>
+      <if test="depAirportCode != null" >
+        dep_airport_code,
+      </if>
+      <if test="depTerm != null" >
+        dep_term,
+      </if>
+      <if test="arrCity != null" >
+        arr_city,
+      </if>
+      <if test="arrCityCode != null" >
+        arr_city_code,
+      </if>
+      <if test="arrAirport != null" >
+        arr_airport,
+      </if>
+      <if test="arrAirportCode != null" >
+        arr_airport_code,
+      </if>
+      <if test="arrTerm != null" >
+        arr_term,
+      </if>
+      <if test="company != null" >
+        company,
+      </if>
+      <if test="companyCode != null" >
+        company_code,
+      </if>
+      <if test="depDate != null" >
+        dep_date,
+      </if>
+      <if test="depTime != null" >
+        dep_time,
+      </if>
+      <if test="arrDate != null" >
+        arr_date,
+      </if>
+      <if test="arrTime != null" >
+        arr_time,
+      </if>
+      <if test="stopAirport != null" >
+        stop_airport,
+      </if>
+      <if test="meal != null" >
+        meal,
+      </if>
+      <if test="distance != null" >
+        distance,
+      </if>
+      <if test="punctuality != null" >
+        punctuality,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="flightCode != null" >
+        #{flightCode,jdbcType=VARCHAR},
+      </if>
+      <if test="flightType != null" >
+        #{flightType,jdbcType=VARCHAR},
+      </if>
+      <if test="cabinType != null" >
+        #{cabinType,jdbcType=VARCHAR},
+      </if>
+      <if test="planeType != null" >
+        #{planeType,jdbcType=VARCHAR},
+      </if>
+      <if test="timeUse != null" >
+        #{timeUse,jdbcType=INTEGER},
+      </if>
+      <if test="buildPrice != null" >
+        #{buildPrice,jdbcType=INTEGER},
+      </if>
+      <if test="stop != null" >
+        #{stop,jdbcType=INTEGER},
+      </if>
+      <if test="stopCity != null" >
+        #{stopCity,jdbcType=VARCHAR},
+      </if>
+      <if test="comment != null" >
+        #{comment,jdbcType=VARCHAR},
+      </if>
+      <if test="basePrice != null" >
+        #{basePrice,jdbcType=INTEGER},
+      </if>
+      <if test="discount != null" >
+        #{discount,jdbcType=INTEGER},
+      </if>
+      <if test="truePrice != null" >
+        #{truePrice,jdbcType=INTEGER},
+      </if>
+      <if test="ticketNum != null" >
+        #{ticketNum,jdbcType=INTEGER},
+      </if>
+      <if test="depCity != null" >
+        #{depCity,jdbcType=VARCHAR},
+      </if>
+      <if test="depCityCode != null" >
+        #{depCityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="depAirport != null" >
+        #{depAirport,jdbcType=VARCHAR},
+      </if>
+      <if test="depAirportCode != null" >
+        #{depAirportCode,jdbcType=VARCHAR},
+      </if>
+      <if test="depTerm != null" >
+        #{depTerm,jdbcType=VARCHAR},
+      </if>
+      <if test="arrCity != null" >
+        #{arrCity,jdbcType=VARCHAR},
+      </if>
+      <if test="arrCityCode != null" >
+        #{arrCityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="arrAirport != null" >
+        #{arrAirport,jdbcType=VARCHAR},
+      </if>
+      <if test="arrAirportCode != null" >
+        #{arrAirportCode,jdbcType=VARCHAR},
+      </if>
+      <if test="arrTerm != null" >
+        #{arrTerm,jdbcType=VARCHAR},
+      </if>
+      <if test="company != null" >
+        #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null" >
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="depDate != null" >
+        #{depDate,jdbcType=VARCHAR},
+      </if>
+      <if test="depTime != null" >
+        #{depTime,jdbcType=VARCHAR},
+      </if>
+      <if test="arrDate != null" >
+        #{arrDate,jdbcType=VARCHAR},
+      </if>
+      <if test="arrTime != null" >
+        #{arrTime,jdbcType=VARCHAR},
+      </if>
+      <if test="stopAirport != null" >
+        #{stopAirport,jdbcType=VARCHAR},
+      </if>
+      <if test="meal != null" >
+        #{meal,jdbcType=INTEGER},
+      </if>
+      <if test="distance != null" >
+        #{distance,jdbcType=INTEGER},
+      </if>
+      <if test="punctuality != null" >
+        #{punctuality,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.flight.bean.FlightExample" resultType="java.lang.Integer" >
+    select count(*) from flight
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update flight
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.flightCode != null" >
+        flight_code = #{record.flightCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.flightType != null" >
+        flight_type = #{record.flightType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cabinType != null" >
+        cabin_type = #{record.cabinType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.planeType != null" >
+        plane_type = #{record.planeType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.timeUse != null" >
+        time_use = #{record.timeUse,jdbcType=INTEGER},
+      </if>
+      <if test="record.buildPrice != null" >
+        build_price = #{record.buildPrice,jdbcType=INTEGER},
+      </if>
+      <if test="record.stop != null" >
+        stop = #{record.stop,jdbcType=INTEGER},
+      </if>
+      <if test="record.stopCity != null" >
+        stop_city = #{record.stopCity,jdbcType=VARCHAR},
+      </if>
+      <if test="record.comment != null" >
+        comment = #{record.comment,jdbcType=VARCHAR},
+      </if>
+      <if test="record.basePrice != null" >
+        base_price = #{record.basePrice,jdbcType=INTEGER},
+      </if>
+      <if test="record.discount != null" >
+        discount = #{record.discount,jdbcType=INTEGER},
+      </if>
+      <if test="record.truePrice != null" >
+        true_price = #{record.truePrice,jdbcType=INTEGER},
+      </if>
+      <if test="record.ticketNum != null" >
+        ticket_num = #{record.ticketNum,jdbcType=INTEGER},
+      </if>
+      <if test="record.depCity != null" >
+        dep_city = #{record.depCity,jdbcType=VARCHAR},
+      </if>
+      <if test="record.depCityCode != null" >
+        dep_city_code = #{record.depCityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.depAirport != null" >
+        dep_airport = #{record.depAirport,jdbcType=VARCHAR},
+      </if>
+      <if test="record.depAirportCode != null" >
+        dep_airport_code = #{record.depAirportCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.depTerm != null" >
+        dep_term = #{record.depTerm,jdbcType=VARCHAR},
+      </if>
+      <if test="record.arrCity != null" >
+        arr_city = #{record.arrCity,jdbcType=VARCHAR},
+      </if>
+      <if test="record.arrCityCode != null" >
+        arr_city_code = #{record.arrCityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.arrAirport != null" >
+        arr_airport = #{record.arrAirport,jdbcType=VARCHAR},
+      </if>
+      <if test="record.arrAirportCode != null" >
+        arr_airport_code = #{record.arrAirportCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.arrTerm != null" >
+        arr_term = #{record.arrTerm,jdbcType=VARCHAR},
+      </if>
+      <if test="record.company != null" >
+        company = #{record.company,jdbcType=VARCHAR},
+      </if>
+      <if test="record.companyCode != null" >
+        company_code = #{record.companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.depDate != null" >
+        dep_date = #{record.depDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.depTime != null" >
+        dep_time = #{record.depTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.arrDate != null" >
+        arr_date = #{record.arrDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.arrTime != null" >
+        arr_time = #{record.arrTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.stopAirport != null" >
+        stop_airport = #{record.stopAirport,jdbcType=VARCHAR},
+      </if>
+      <if test="record.meal != null" >
+        meal = #{record.meal,jdbcType=INTEGER},
+      </if>
+      <if test="record.distance != null" >
+        distance = #{record.distance,jdbcType=INTEGER},
+      </if>
+      <if test="record.punctuality != null" >
+        punctuality = #{record.punctuality,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update flight
+    set id = #{record.id,jdbcType=INTEGER},
+      flight_code = #{record.flightCode,jdbcType=VARCHAR},
+      flight_type = #{record.flightType,jdbcType=VARCHAR},
+      cabin_type = #{record.cabinType,jdbcType=VARCHAR},
+      plane_type = #{record.planeType,jdbcType=VARCHAR},
+      time_use = #{record.timeUse,jdbcType=INTEGER},
+      build_price = #{record.buildPrice,jdbcType=INTEGER},
+      stop = #{record.stop,jdbcType=INTEGER},
+      stop_city = #{record.stopCity,jdbcType=VARCHAR},
+      comment = #{record.comment,jdbcType=VARCHAR},
+      base_price = #{record.basePrice,jdbcType=INTEGER},
+      discount = #{record.discount,jdbcType=INTEGER},
+      true_price = #{record.truePrice,jdbcType=INTEGER},
+      ticket_num = #{record.ticketNum,jdbcType=INTEGER},
+      dep_city = #{record.depCity,jdbcType=VARCHAR},
+      dep_city_code = #{record.depCityCode,jdbcType=VARCHAR},
+      dep_airport = #{record.depAirport,jdbcType=VARCHAR},
+      dep_airport_code = #{record.depAirportCode,jdbcType=VARCHAR},
+      dep_term = #{record.depTerm,jdbcType=VARCHAR},
+      arr_city = #{record.arrCity,jdbcType=VARCHAR},
+      arr_city_code = #{record.arrCityCode,jdbcType=VARCHAR},
+      arr_airport = #{record.arrAirport,jdbcType=VARCHAR},
+      arr_airport_code = #{record.arrAirportCode,jdbcType=VARCHAR},
+      arr_term = #{record.arrTerm,jdbcType=VARCHAR},
+      company = #{record.company,jdbcType=VARCHAR},
+      company_code = #{record.companyCode,jdbcType=VARCHAR},
+      dep_date = #{record.depDate,jdbcType=VARCHAR},
+      dep_time = #{record.depTime,jdbcType=VARCHAR},
+      arr_date = #{record.arrDate,jdbcType=VARCHAR},
+      arr_time = #{record.arrTime,jdbcType=VARCHAR},
+      stop_airport = #{record.stopAirport,jdbcType=VARCHAR},
+      meal = #{record.meal,jdbcType=INTEGER},
+      distance = #{record.distance,jdbcType=INTEGER},
+      punctuality = #{record.punctuality,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.flight.bean.Flight" >
+    update flight
+    <set >
+      <if test="flightCode != null" >
+        flight_code = #{flightCode,jdbcType=VARCHAR},
+      </if>
+      <if test="flightType != null" >
+        flight_type = #{flightType,jdbcType=VARCHAR},
+      </if>
+      <if test="cabinType != null" >
+        cabin_type = #{cabinType,jdbcType=VARCHAR},
+      </if>
+      <if test="planeType != null" >
+        plane_type = #{planeType,jdbcType=VARCHAR},
+      </if>
+      <if test="timeUse != null" >
+        time_use = #{timeUse,jdbcType=INTEGER},
+      </if>
+      <if test="buildPrice != null" >
+        build_price = #{buildPrice,jdbcType=INTEGER},
+      </if>
+      <if test="stop != null" >
+        stop = #{stop,jdbcType=INTEGER},
+      </if>
+      <if test="stopCity != null" >
+        stop_city = #{stopCity,jdbcType=VARCHAR},
+      </if>
+      <if test="comment != null" >
+        comment = #{comment,jdbcType=VARCHAR},
+      </if>
+      <if test="basePrice != null" >
+        base_price = #{basePrice,jdbcType=INTEGER},
+      </if>
+      <if test="discount != null" >
+        discount = #{discount,jdbcType=INTEGER},
+      </if>
+      <if test="truePrice != null" >
+        true_price = #{truePrice,jdbcType=INTEGER},
+      </if>
+      <if test="ticketNum != null" >
+        ticket_num = #{ticketNum,jdbcType=INTEGER},
+      </if>
+      <if test="depCity != null" >
+        dep_city = #{depCity,jdbcType=VARCHAR},
+      </if>
+      <if test="depCityCode != null" >
+        dep_city_code = #{depCityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="depAirport != null" >
+        dep_airport = #{depAirport,jdbcType=VARCHAR},
+      </if>
+      <if test="depAirportCode != null" >
+        dep_airport_code = #{depAirportCode,jdbcType=VARCHAR},
+      </if>
+      <if test="depTerm != null" >
+        dep_term = #{depTerm,jdbcType=VARCHAR},
+      </if>
+      <if test="arrCity != null" >
+        arr_city = #{arrCity,jdbcType=VARCHAR},
+      </if>
+      <if test="arrCityCode != null" >
+        arr_city_code = #{arrCityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="arrAirport != null" >
+        arr_airport = #{arrAirport,jdbcType=VARCHAR},
+      </if>
+      <if test="arrAirportCode != null" >
+        arr_airport_code = #{arrAirportCode,jdbcType=VARCHAR},
+      </if>
+      <if test="arrTerm != null" >
+        arr_term = #{arrTerm,jdbcType=VARCHAR},
+      </if>
+      <if test="company != null" >
+        company = #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null" >
+        company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="depDate != null" >
+        dep_date = #{depDate,jdbcType=VARCHAR},
+      </if>
+      <if test="depTime != null" >
+        dep_time = #{depTime,jdbcType=VARCHAR},
+      </if>
+      <if test="arrDate != null" >
+        arr_date = #{arrDate,jdbcType=VARCHAR},
+      </if>
+      <if test="arrTime != null" >
+        arr_time = #{arrTime,jdbcType=VARCHAR},
+      </if>
+      <if test="stopAirport != null" >
+        stop_airport = #{stopAirport,jdbcType=VARCHAR},
+      </if>
+      <if test="meal != null" >
+        meal = #{meal,jdbcType=INTEGER},
+      </if>
+      <if test="distance != null" >
+        distance = #{distance,jdbcType=INTEGER},
+      </if>
+      <if test="punctuality != null" >
+        punctuality = #{punctuality,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.flight.bean.Flight" >
+    update flight
+    set flight_code = #{flightCode,jdbcType=VARCHAR},
+      flight_type = #{flightType,jdbcType=VARCHAR},
+      cabin_type = #{cabinType,jdbcType=VARCHAR},
+      plane_type = #{planeType,jdbcType=VARCHAR},
+      time_use = #{timeUse,jdbcType=INTEGER},
+      build_price = #{buildPrice,jdbcType=INTEGER},
+      stop = #{stop,jdbcType=INTEGER},
+      stop_city = #{stopCity,jdbcType=VARCHAR},
+      comment = #{comment,jdbcType=VARCHAR},
+      base_price = #{basePrice,jdbcType=INTEGER},
+      discount = #{discount,jdbcType=INTEGER},
+      true_price = #{truePrice,jdbcType=INTEGER},
+      ticket_num = #{ticketNum,jdbcType=INTEGER},
+      dep_city = #{depCity,jdbcType=VARCHAR},
+      dep_city_code = #{depCityCode,jdbcType=VARCHAR},
+      dep_airport = #{depAirport,jdbcType=VARCHAR},
+      dep_airport_code = #{depAirportCode,jdbcType=VARCHAR},
+      dep_term = #{depTerm,jdbcType=VARCHAR},
+      arr_city = #{arrCity,jdbcType=VARCHAR},
+      arr_city_code = #{arrCityCode,jdbcType=VARCHAR},
+      arr_airport = #{arrAirport,jdbcType=VARCHAR},
+      arr_airport_code = #{arrAirportCode,jdbcType=VARCHAR},
+      arr_term = #{arrTerm,jdbcType=VARCHAR},
+      company = #{company,jdbcType=VARCHAR},
+      company_code = #{companyCode,jdbcType=VARCHAR},
+      dep_date = #{depDate,jdbcType=VARCHAR},
+      dep_time = #{depTime,jdbcType=VARCHAR},
+      arr_date = #{arrDate,jdbcType=VARCHAR},
+      arr_time = #{arrTime,jdbcType=VARCHAR},
+      stop_airport = #{stopAirport,jdbcType=VARCHAR},
+      meal = #{meal,jdbcType=INTEGER},
+      distance = #{distance,jdbcType=INTEGER},
+      punctuality = #{punctuality,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

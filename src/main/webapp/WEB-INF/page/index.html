@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>Bootstrap 101 Template</title>
+    <!-- Bootstrap -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<!--    bootstrap Table-->
+    <link rel="stylesheet" href="../css/bootstrap-table.css">
+</head>
+<style>
+  body{
+      /*导航遮掩*/
+      padding-top: 70px;
+      /*地板空余*/
+      padding-bottom: 70px;
+
+  }
+    #main-container .col-md-4{
+        text-align: center;
+    }
+    hr #divider{
+        margin: 40px 0;
+    }
+    .feature{
+        padding: 30px 0;
+    }
+
+</style>
+<body>
+    <!--导航条-->
+    <nav class="navbar navbar-default navbar-fixed-top  navbar-inverse" >
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#demo-navbar" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">航班信息搜索系统</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="demo-navbar" >
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+                    <li><a href="#" data-toggle="modal" data-target="#about">说明</a></li>
+                    <!--下拉菜单-->
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">航程 <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#home">单程</a></li>
+                            <li><a href="#profile">往返</a></li>
+                            <li ><a href="#messages">messages</a></li>
+
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+    <!--主体内容-->
+    <div class="container" id="main-container">
+
+        <!--便签页-->
+        <ul class="nav nav-tabs" role="tablist" id="tab-list">
+            <li  class="active" ><a href="#home" role="tab" data-toggle="tab">单程</a></li>
+            <li ><a href="#profile" role="tab" data-toggle="tab">往返</a></li>
+            <li ><a href="#messages" role="tab" data-toggle="tab">messages</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="home">
+                <div class="row feature">
+                    <div class="table-responsive">
+                        <table class="table" border="2" width="800px">
+                            <tr>
+                                <td>出发城市</td><td><input type="text" id="startCity1" placeholder="请输入始站" ></td>
+
+                            </tr>
+                            <tr>
+                                <td>到达城市</td><td><input type="text" id="arrivalCity1" placeholder="请输入终站" ></td>
+                            </tr>
+                            <tr  >
+                                <td  colspan="2">
+                                        <label for="dtp_input1" class=" control-label " >起飞时间</label>
+                                        <div class="input-group date form_datetime " data-date="2018-03-28T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                                            <input class="form-control" style="width: 250px" type="text" value="" readonly>
+                                            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                                        </div>
+                                        <input type="hidden" id="dtp_input1" value="" />
+                                </td>
+                            </tr>
+                            <tr><td colspan="2" align="right"><input type="submit" value="查询" id="serachbtn1" onclick="testSearch()"></td> </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane " id="profile">
+                <div class="row feature">
+                    <div class="table-responsive">
+                        <table class="table" border="2" width="800px">
+                            <tr>
+                                <td>出发城市</td><td><input type="text" id="startCity2" placeholder="请输入始站" ></td>
+
+                            </tr>
+                            <tr>
+                                <td>到达城市</td><td><input type="text" id="arrivalCity2" placeholder="请输入终站" ></td>
+                            </tr>
+                            <tr  >
+                                <td  colspan="2">
+                                    <label for="dtp_input1" class=" control-label " >起飞时间</label>
+                                    <div class="input-group date form_datetime " data-date="2018-03-28T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                                        <input class="form-control" style="width: 250px" type="text" value="" readonly>
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                                    </div>
+                                    <input type="hidden" id="dtp_input2" value="" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"  >
+                                    <div class="form-group">
+                                        <label for="dtp_input1" class="2 control-label">归程时间</label>
+                                        <div class="input-group date form_datetime " data-date="2018-03-28T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                                            <input class="form-control" style="width: 250px" type="text" value="" readonly>
+                                            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr><td colspan="2" align="right"><input type="submit" value="查询" id="serachbtn2" onclick="testSearch()"></td> </tr>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane " id="messages">
+                <div class="row feature">
+                    <div class="col-md-7">
+                        dhfajdfhdsfdfhhdfhdfabhfbdbffbdfbcccccccccccccccccccccccafadfdghfdfdffdfsdfsfhhhaga
+                    </div>
+                    <div class="col-md-5">
+                        dddddddddddddddddddddddddddddddddddddddddddddddd
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--排序条件导航条-->
+        <nav class="navbar navbar-default" id="sortNav" >
+            <div class="container">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#demo-navbar" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">条件查询</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="demo-navbar2" >
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+                        <li><a href="#" data-toggle="modal" data-target="#about">说明</a></li>
+                        <!--下拉菜单-->
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                价钱 <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#home">最多</a></li>
+                                <li><a href="#profile">最少</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                花费时间 <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#home">最多</a></li>
+                                <li><a href="#profile">最少</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                路程 <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#home">最多</a></li>
+                                <li><a href="#profile">最少</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+        <!--表格显示航班信息-->
+        <table   id="table" >
+        </table>
+
+        <!--山岚格式-->
+        <div class="row">
+            <div class="col-md-4">
+                <h1>hi  h1</h1>
+                <h2>hi  h2</h2>
+            </div>
+            <div class="col-md-4">
+                <h1>hi  h1</h1>
+                <h2>hi  h2</h2>
+            </div>
+            <div class="col-md-4">
+                <h1>hi  h1</h1>
+                <h2>hi  h2</h2>
+            </div>
+        </div>
+        <hr id="divider">
+        <footer>
+
+            <p class="pull-right" ><a href="#top">回到顶部</a> </p>
+            <p>@ 2018 航班信息搜索系统</p>
+
+
+        </footer>
+
+
+    </div>
+    <!--弹出框隐形的，被调用就行-->
+    <div class="modal fade" id="about">
+        <div class="modal-dialog">
+            <div  class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span><span class="sr-only">
+                        Close
+                    </span>
+                    </button>
+                    <h4 class="modal-title">关于航班信息</h4>
+                </div>
+                <div class="modal-body">
+                    ...........
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"data-dismiss="modal">
+                        明白
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+    <script src="../js/jquery-3.3.1.js"></script>
+    <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+    <script src="../js/bootstrap.min.js"></script>
+    <!--    bootstrap-->
+    <script src="../js/bootstrap-table.js"></script>
+    <!-- script src="../js/bootstrap-table-zh-CN.js" type="text/javascript"></script> -->
+    <!--读取后台传过来的JSON字符串-->
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $.post(
+                "AjaxAction.do",
+                {params:"ajaxParam"},
+                function(data){
+                    console.log(data);
+                    var member = eval("("+data+")");
+                    $('#table').bootstrapTable({
+                        data:member,
+                        columns:[
+                            {
+                                title: '#',
+                                field: 'id',
+                                align: 'center',
+
+                            },
+                            {
+                                title: '起点',
+                                field: 'startC',
+                                align: 'center',
+
+                            },
+                            {
+                                title: '起飞时间',
+                                field: 'startT',
+                                align: 'center'
+                            },
+                            {
+                                title: '到达时间',
+                                field: 'arrivalT',
+                                align: 'center'
+                            },
+                            {
+                                title: '终点',
+                                field: 'arrivalC',
+                                align: 'center'
+                            }, {
+                                title: '价格',
+                                field: 'price',
+                                align: 'center'
+                            }
+                        ]
+                    });
+                },"json");
+            /*var json= [{"arrivalC":"茂名","arrivalT":{"date":10,"day":2,"hours":20,"minutes":30,"month":3,"nanos":0,"seconds":9,"time":1523363409000,"timezoneOffset":-480,"year":118},"id":1,"price":120,"startC":"高州","startT":{"date":10,"day":2,"hours":20,"minutes":30,"month":3,"nanos":0,"seconds":9,"time":1523363409000,"timezoneOffset":-480,"year":118}},{"arrivalC":"广州","arrivalT":{"date":13,"day":5,"hours":19,"minutes":38,"month":3,"nanos":0,"seconds":46,"time":1523619526000,"timezoneOffset":-480,"year":118},"id":4,"price":101,"startC":"北京","startT":{"date":13,"day":5,"hours":19,"minutes":38,"month":3,"nanos":0,"seconds":46,"time":1523619526000,"timezoneOffset":-480,"year":118}}]
+         */
+
+        });
+    </script>
+<!--    test Json to table-->
+
+    <script>
+        $(document).ready(function () {
+            $("#demo-navbar .dropdown-menu a").click(function () {
+                var href = $(this).attr("href");
+                $("#tab-list a[href='" + href + "']").tab("show")
+            });
+        });
+    </script>
+    <script type="text/javascript" src="../js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" src="../js/bootstrap-datetimepicker.fr.js" charset="UTF-8"></script>
+    <script>
+        $('.form_datetime').datetimepicker({
+            weekStart: 0, //一周从哪一天开始
+            todayBtn:  1, //
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            forceParse: 0,
+            showMeridian: 1
+        });
+    </script>
+    <!--表格插入-->
+    <script>
+        var testSearch=function () {
+            var otable=document.getElementById("mian_table");
+            var R=otable.insertRow(1);
+            var left=R.insertCell(0);
+            var right=R.insertCell(1);
+            left.innerHTML="div教程";
+            right.innerHTML="SEO教程";
+        };
+    </script>
+
+
+</body>
+</html>

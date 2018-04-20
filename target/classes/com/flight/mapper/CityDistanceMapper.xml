@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.flight.mapper.CityDistanceMapper" >
+
+	<update id="truncateTable">
+		truncate table city_distance
+	</update>
+
+
+  <resultMap id="BaseResultMap" type="com.flight.bean.CityDistance" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="acity" property="acity" jdbcType="VARCHAR" />
+    <result column="acity_code" property="acityCode" jdbcType="VARCHAR" />
+    <result column="bcity" property="bcity" jdbcType="VARCHAR" />
+    <result column="bcity_code" property="bcityCode" jdbcType="VARCHAR" />
+    <result column="distance" property="distance" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, acity, acity_code, bcity, bcity_code, distance
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.flight.bean.CityDistanceExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from city_distance
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from city_distance
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from city_distance
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.flight.bean.CityDistanceExample" >
+    delete from city_distance
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.flight.bean.CityDistance"  useGeneratedKeys="true" keyProperty="id">
+    insert into city_distance (acity, acity_code, 
+      bcity, bcity_code, distance
+      )
+    values (#{acity,jdbcType=VARCHAR}, #{acityCode,jdbcType=VARCHAR}, 
+      #{bcity,jdbcType=VARCHAR}, #{bcityCode,jdbcType=VARCHAR}, #{distance,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.flight.bean.CityDistance" >
+    insert into city_distance
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="acity != null" >
+        acity,
+      </if>
+      <if test="acityCode != null" >
+        acity_code,
+      </if>
+      <if test="bcity != null" >
+        bcity,
+      </if>
+      <if test="bcityCode != null" >
+        bcity_code,
+      </if>
+      <if test="distance != null" >
+        distance,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="acity != null" >
+        #{acity,jdbcType=VARCHAR},
+      </if>
+      <if test="acityCode != null" >
+        #{acityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="bcity != null" >
+        #{bcity,jdbcType=VARCHAR},
+      </if>
+      <if test="bcityCode != null" >
+        #{bcityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="distance != null" >
+        #{distance,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.flight.bean.CityDistanceExample" resultType="java.lang.Integer" >
+    select count(*) from city_distance
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update city_distance
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.acity != null" >
+        acity = #{record.acity,jdbcType=VARCHAR},
+      </if>
+      <if test="record.acityCode != null" >
+        acity_code = #{record.acityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bcity != null" >
+        bcity = #{record.bcity,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bcityCode != null" >
+        bcity_code = #{record.bcityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.distance != null" >
+        distance = #{record.distance,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update city_distance
+    set id = #{record.id,jdbcType=INTEGER},
+      acity = #{record.acity,jdbcType=VARCHAR},
+      acity_code = #{record.acityCode,jdbcType=VARCHAR},
+      bcity = #{record.bcity,jdbcType=VARCHAR},
+      bcity_code = #{record.bcityCode,jdbcType=VARCHAR},
+      distance = #{record.distance,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.flight.bean.CityDistance" >
+    update city_distance
+    <set >
+      <if test="acity != null" >
+        acity = #{acity,jdbcType=VARCHAR},
+      </if>
+      <if test="acityCode != null" >
+        acity_code = #{acityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="bcity != null" >
+        bcity = #{bcity,jdbcType=VARCHAR},
+      </if>
+      <if test="bcityCode != null" >
+        bcity_code = #{bcityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="distance != null" >
+        distance = #{distance,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.flight.bean.CityDistance" >
+    update city_distance
+    set acity = #{acity,jdbcType=VARCHAR},
+      acity_code = #{acityCode,jdbcType=VARCHAR},
+      bcity = #{bcity,jdbcType=VARCHAR},
+      bcity_code = #{bcityCode,jdbcType=VARCHAR},
+      distance = #{distance,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
