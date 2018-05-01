@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.flight.service.CityDistanceService;
 
@@ -14,10 +15,10 @@ public class CityDistanceController {
 	private CityDistanceService cityDistanceService;
 	
 	@RequestMapping("/updateDistance")
-	public String updateDistance()
+	@ResponseBody
+	public Boolean updateDistance()
 	{
 		//更新city_distance表数据
-		boolean flag=cityDistanceService.updateCityDistance();
-		return "index";
+		return cityDistanceService.updateCityDistance();
 	}
 }

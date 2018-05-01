@@ -7,6 +7,7 @@ com\flight\service\CompanyService.class
 com\flight\controller\FlightController.class
 com\flight\bean\CompanyExample$GeneratedCriteria.class
 com\flight\bean\Airport.class
+com\flight\service\impl\FlightServiceImpl$2.class
 com\flight\bean\CityExample.class
 com\flight\bean\CompanyExample$Criterion.class
 com\flight\bean\CityExample$Criterion.class
@@ -20,6 +21,7 @@ com\flight\controller\CompanyController.class
 com\flight\bean\CityDistance.class
 com\flight\bean\CityExample$GeneratedCriteria.class
 com\flight\bean\CityDistanceExample$Criterion.class
+com\flight\service\impl\FlightServiceImpl$1.class
 com\flight\bean\CompanyExample.class
 com\flight\controller\AirportController.class
 com\flight\bean\TransFlight.class
@@ -41,6 +43,7 @@ com\flight\bean\FlightExample.class
 com\flight\service\FlightService.class
 com\flight\controller\IndexController.class
 com\flight\mapper\CompanyMapper.class
+com\flight\service\impl\FlightServiceImpl$3.class
 com\flight\service\AirportService.class
 com\flight\bean\CityDistanceExample$Criteria.class
 com\flight\GeneratorSqlmap.class

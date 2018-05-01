@@ -28,7 +28,7 @@ public class FlightController {
 	@Autowired
 	private CityDistanceService cityDistanceService;
 	
-	//添加数据库数据的url
+	//手动添加数据库数据的url
 	@RequestMapping(value="/flight2")
 	public String getFlights(String data)
 	{
@@ -36,11 +36,13 @@ public class FlightController {
 		cityDistanceService.updateCityDistance();
 		return "index";
 	}
-	//添加数据库数据的url
+	//自动添加数据库数据的url
 	@RequestMapping(value="/flight")
 	@ResponseBody
 	public List<Flight> getFlight(String depCity,String arrCity,String date)
 	{
+		depCity=depCity.substring(depCity.length()-3);
+		arrCity=arrCity.substring(arrCity.length()-3);
 		List<Flight> result = flightService.updateFlight(depCity,arrCity,date);
 		cityDistanceService.updateCityDistance();
 		return result;
@@ -50,10 +52,21 @@ public class FlightController {
 	@RequestMapping(value="/searchFlight",method=RequestMethod.POST)
 	@ResponseBody
 	public List<Flight> getFlight(String depCity,String depAirport,String arrCity,String arrAirport,
-			String flightType,String cabinType,String company,String date)
+			String flightType,String cabinType,String company,String date,String depTime,String arrTime,String order)
 	{
-		return flightService.getFlight(depCity.toUpperCase(), depAirport.toUpperCase(), arrCity.toUpperCase(),
-				arrAirport.toUpperCase(), flightType, cabinType, company.toUpperCase(), date);
+		depCity=depCity.substring(depCity.length()-3);
+		arrCity=arrCity.substring(arrCity.length()-3);
+		if(depAirport!=null&&depAirport.length()>3) {
+			depAirport=depAirport.substring(depAirport.length()-3);
+		}
+		if(arrAirport!=null&&arrAirport.length()>3) {
+			arrAirport=arrAirport.substring(arrAirport.length()-3);
+		}
+		if(company!=null&&company.length()>2) {
+			company=company.substring(company.length()-2);
+		}
+		return flightService.getFlight(depCity, depAirport, arrCity,arrAirport, 
+				flightType, cabinType, company, date,depTime,arrTime,order);
 	}
 	
 	//查询中转航班的url
@@ -61,11 +74,41 @@ public class FlightController {
 	@ResponseBody
 	public List<TransFlight> getTransFlight(String depCity,String depAirport,String arrCity,String arrAirport,
 			String flightType,String cabinType,String company,String date,String transCity,String transAirport,
-			String minTime,String maxTime)
+			String minTime,String maxTime,String depTime,String arrTime,String order,String transRatio)
 	{
-		return flightService.getTransFlight(depCity.toUpperCase(), depAirport.toUpperCase(), arrCity.toUpperCase(),
-				arrAirport.toUpperCase(), flightType, cabinType, company.toUpperCase(), date, 
-				transCity.toUpperCase(),transAirport.toUpperCase(), minTime, maxTime);
+		/*
+		 * depCity,arrCity,transCity:			出发/到达/中转城市，如 北京BJS
+		 * depAirport,arrAirport,transAirport:	出发/到达/中转机场，如 首都国际机场PEK
+		 * flightType：							飞机类型，大型机|中型机
+		 * cabinType:							舱位类型，经济舱|头等舱
+		 * company:								航空公司，如 南方航空CZ
+		 * date:								出发日期，如 2018-06-04
+		 * minTime:								中转最小时间，默认45分钟
+		 * maxTime:								中转最大时间，默认120分钟
+		 * depTime,arrTime:						出发/到达时间段，0表不限，1表00:00-06:00,2表06:00-12:00,3表12:00-18:00,4表18:00-24:00
+		 * order:								排序方式,0表按价格排序，1表中转时间排序，2表中转距离排序
+		 * transRatio:							中转总距离和直飞距离的比值，默认1.6 
+		 */
+		depCity=depCity.substring(depCity.length()-3);
+		arrCity=arrCity.substring(arrCity.length()-3);
+		if(depAirport!=null&&depAirport.length()>3) {
+			depAirport=depAirport.substring(depAirport.length()-3);
+		}
+		if(arrAirport!=null&&arrAirport.length()>3) {
+			arrAirport=arrAirport.substring(arrAirport.length()-3);
+		}
+		if(company!=null&&company.length()>2) {
+			company=company.substring(company.length()-2);
+		}
+		if(transCity!=null&&transCity.length()>3) {
+			transCity=transCity.substring(transCity.length()-3);
+		}
+		if(transAirport!=null&&transAirport.length()>3) {
+			transAirport=transAirport.substring(transAirport.length()-3);
+		}
+		return flightService.getTransFlight(depCity, depAirport, arrCity,arrAirport,
+				flightType,cabinType, company, date, transCity,	transAirport,minTime,
+				maxTime,depTime,arrTime,order,transRatio);
 	}
 	
 	//原来是想用来爬数据的，但现在不能用

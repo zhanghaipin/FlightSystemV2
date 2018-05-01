@@ -2,15 +2,24 @@ package com.flight.bean;
 
 public class TransFlight {
 
-	public TransFlight(Flight firstFlight, Flight secondFlight, String transTime) {
+	
+	private Flight firstFlight;
+	private Flight secondFlight;
+	private Integer transTime;
+	private Integer transPrice;
+	private Integer transDistance;
+	public TransFlight(Flight firstFlight, Flight secondFlight, Integer transTime, Integer transPrice,
+			Integer transDistance) {
 		super();
 		this.firstFlight = firstFlight;
 		this.secondFlight = secondFlight;
 		this.transTime = transTime;
+		this.transPrice = transPrice;
+		this.transDistance = transDistance;
 	}
-	private Flight firstFlight;
-	private Flight secondFlight;
-	private String transTime;
+	public TransFlight() {
+		super();
+	}
 	public Flight getFirstFlight() {
 		return firstFlight;
 	}
@@ -23,14 +32,24 @@ public class TransFlight {
 	public void setSecondFlight(Flight secondFlight) {
 		this.secondFlight = secondFlight;
 	}
-	public String getTransTime() {
+	public Integer getTransTime() {
 		return transTime;
 	}
-	public void setTransTime(String transTime) {
+	public void setTransTime(Integer transTime) {
 		this.transTime = transTime;
 	}
-	public TransFlight() {
-		super();
+	public Integer getTransPrice() {
+		return transPrice;
 	}
+	public void setTransPrice(Integer transPrice) {
+		this.transPrice = transPrice;
+	}
+	public Integer getTransDistance() {
+		return transDistance;
+	}
+	public void setTransDistance(Integer transDistance) {
+		this.transDistance = transDistance;
+	}
+	
 	
 }

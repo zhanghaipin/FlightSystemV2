@@ -4,6 +4,8 @@ package com.flight.service.impl;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.ls.LSInput;
 
 import com.flight.bean.City;
 import com.flight.bean.CityDistance;
@@ -66,8 +69,8 @@ public class FlightServiceImpl implements FlightService{
 	public List<Flight> updateFlight(String depCity, String arrCity, String date) {
 		List<Flight> list=new ArrayList<>();
 		String pageUrl=FLIGHT_API+FLIGHT_DCITY+depCity+FLIGHT_ACITY+arrCity+FLIGHT_DATE+date+FLIGHT_PARAM;
-		String json =depCity;// HttpClientUtil.doGet(pageUrl).trim();
-		json=json.substring(21, json.length()-4).trim();
+		String json =depCity;//HttpClientUtil.doGet(pageUrl).trim();
+		json=json.substring(24, json.length()-4).trim();
         JSONObject result =JSON.parseObject(json);
         if(result.getInteger("error")==0)//有相应数据
         {
@@ -188,23 +191,24 @@ public class FlightServiceImpl implements FlightService{
 
 	//查询直飞航班
 	@Override
-	public List<Flight> getFlight(String depCity, String depAirport, String arrCity, String arrAirport,
-			String flightType, String cabinType, String company, String date) 
+	public List<Flight> getFlight(String depCity, String depAirport, String arrCity, 
+			String arrAirport,String flightType, String cabinType, String company, 
+			String date,String depTime,String arrTime,String order) 
 	{
 		List<Flight> list=new ArrayList<>();
 		FlightExample example = new FlightExample();
 		example.setDistinct(true);
 		Criteria criteria = example.createCriteria();
-		criteria.andDepCityCodeEqualTo(depCity);
-		criteria.andArrCityCodeEqualTo(arrCity);
+		criteria.andDepCityCodeEqualTo(depCity.toUpperCase());
+		criteria.andArrCityCodeEqualTo(arrCity.toUpperCase());
 		criteria.andDepDateEqualTo(date);
 		if(depAirport!=null&&!("".equals(depAirport.trim())))
 		{
-			criteria.andDepAirportCodeEqualTo(depAirport);
+			criteria.andDepAirportCodeEqualTo(depAirport.toUpperCase());
 		}
 		if(arrAirport!=null&&!("".equals(arrAirport.trim())))
 		{
-			criteria.andArrAirportCodeEqualTo(arrAirport);
+			criteria.andArrAirportCodeEqualTo(arrAirport.toUpperCase());
 		}
 		if(flightType!=null&&!("".equals(flightType.trim())))
 		{
@@ -216,27 +220,130 @@ public class FlightServiceImpl implements FlightService{
 		}
 		if(company!=null&&!("".equals(company.trim())))
 		{
-			criteria.andCompanyCodeEqualTo(company);
+			criteria.andCompanyCodeEqualTo(company.toUpperCase());
 		}
-		
+				
 		list=flightMapper.selectByExample(example);
+		int depMin;int depMax;int arrMin;int arrMax;
+		//筛选出发时间段
+		switch (depTime) {
+			case "1"://00:00~06:00
+				depMin=0;depMax=360;break;
+			case "2"://06:00~12:00
+				depMin=360;depMax=720;break;
+			case "3"://12:00~18:00
+				depMin=720;depMax=1080;break;
+			case "4"://18:00~24:00
+				depMin=1080;depMax=1440;break;
+			default:
+				depMin=0;depMax=1440;break;
+		}
+		//筛选到达时间段
+		switch (arrTime) {
+			case "1"://00:00~06:00
+				arrMin=0;arrMax=360;break;
+			case "2"://06:00~12:00
+				arrMin=360;arrMax=720;break;
+			case "3"://12:00~18:00
+				arrMin=720;arrMax=1080;break;
+			case "4"://18:00~24:00
+				arrMin=1080;arrMax=1440;break;
+			default:
+				arrMin=0;arrMax=1440;break;
+		}
+		//排除不符合时间段的航班记录
+		List<Flight> removeList=new ArrayList<>();
+		for (int i = 0; i < list.size(); i++) {
+			Flight f=list.get(i);
+			int dep=Integer.parseInt(f.getDepTime().substring(0, 2))*60+Integer.parseInt(f.getDepTime().substring(3,5));
+			int arr=Integer.parseInt(f.getArrTime().substring(0, 2))*60+Integer.parseInt(f.getArrTime().substring(3,5));
+			if(dep>depMax||dep<depMin||arr>arrMax||arr<arrMin) {
+				removeList.add(f);
+			}
+		}
+		list.removeAll(removeList);
+		//排序
+		switch (order) {
+		case "1"://时间排序
+			Collections.sort(list, new Comparator<Flight>() {  
+	            @Override  
+	            public int compare(Flight f1, Flight f2) {  
+	                int i = f1.getTimeUse()-f2.getTimeUse();
+	                if(i == 0){  
+	                	return f1.getTruePrice()-f2.getTruePrice();
+	                }  
+	                return i;  
+	            }  
+	        });  
+			break;
+		default://价格排序
+			Collections.sort(list, new Comparator<Flight>() {  
+	            @Override  
+	            public int compare(Flight f1, Flight f2) {  
+	                int i = f1.getTruePrice()-f2.getTruePrice();
+	                if(i == 0){  
+	                	return f1.getTimeUse()-f2.getTimeUse();
+	                }  
+	                return i;  
+	            }  
+	        });  
+			break;
+	}
 		return list;
 	}
 
 	//查询中转航班
 	@Override
-	public List<TransFlight> getTransFlight(String depCity, String depAirport, String arrCity, String arrAirport,
-			String flightType, String cabinType, String company, String date, String transCity,String transAirport,
-			String minTime,	String maxTime) 
+	public List<TransFlight> getTransFlight(String depCity,String depAirport,String arrCity,String arrAirport,
+			String flightType,String cabinType,String company,String date,String transCity,String transAirport,
+			String minTime,String maxTime,String depTime,String arrTime,String order,String transRatio)
 	{
 		List<TransFlight> list=new ArrayList<>();
 		if(transCity!=null&&!("".equals(transCity.trim())))
 		{
 			//有中转城市
-			list   =  getFlightByTrans(depCity, depAirport, arrCity, arrAirport, flightType, cabinType, company, date, transCity,transAirport, minTime, maxTime);
+			list   =  getFlightByTrans(depCity, depAirport, arrCity, arrAirport, flightType, cabinType, company, date, transCity,transAirport, minTime, maxTime,depTime,arrTime,order,transRatio);
 		}else {
 			//无中转城市
-			list=getFlightWithoutTrans(depCity, depAirport, arrCity, arrAirport, flightType, cabinType, company, date, transCity,transAirport, minTime, maxTime);
+			list=getFlightWithoutTrans(depCity, depAirport, arrCity, arrAirport, flightType, cabinType, company, date, transCity,transAirport, minTime, maxTime,depTime,arrTime,order,transRatio);
+		}
+		switch (order) {
+			case "1"://中转时间排序
+				Collections.sort(list, new Comparator<TransFlight>() {  
+		            @Override  
+		            public int compare(TransFlight f1, TransFlight f2) {  
+		                int i = f1.getTransTime()-f2.getTransTime();
+		                if(i == 0){  
+		                	return f1.getTransPrice()-f2.getTransPrice();
+		                }  
+		                return i;  
+		            }  
+		        });  
+				break;
+			case "2"://中转距离排序
+				Collections.sort(list, new Comparator<TransFlight>() {  
+		            @Override  
+		            public int compare(TransFlight f1, TransFlight f2) {  
+		                int i = f1.getTransDistance()-f2.getTransDistance();
+		                if(i == 0){  
+		                	return f1.getTransPrice()-f2.getTransPrice();
+		                }  
+		                return i;  
+		            }  
+		        });  		
+				break;
+			default://总价格排序
+				Collections.sort(list, new Comparator<TransFlight>() {  
+		            @Override  
+		            public int compare(TransFlight f1, TransFlight f2) {  
+		                int i = f1.getTransPrice()-f2.getTransPrice();
+		                if(i == 0){  
+		                	return f1.getTransTime()-f2.getTransTime();
+		                }  
+		                return i;  
+		            }  
+		        });  
+				break;
 		}
 		return list;
 	}
@@ -244,11 +351,11 @@ public class FlightServiceImpl implements FlightService{
 	//已知中转城市情况下
 	public List<TransFlight> getFlightByTrans(String depCity, String depAirport, String arrCity, String arrAirport,
 			String flightType, String cabinType, String company, String date, String transCity,String transAirport,
-			String minTime,	String maxTime) 
+			String minTime,	String maxTime,String depTime,String arrTime,String order,String transRatio) 
 	{
 		List<TransFlight> list=new ArrayList<>();
-		List<Flight> firstList =getFlight(depCity, depAirport, transCity, transAirport, flightType, cabinType, company, date);
-		List<Flight> secondList=getFlight(transCity, transAirport, arrCity, arrAirport, flightType, cabinType, company, date);
+		List<Flight> firstList =getFlight(depCity, depAirport, transCity, transAirport, flightType, cabinType, company, date,depTime,"0",order);
+		List<Flight> secondList=getFlight(transCity, transAirport, arrCity, arrAirport, flightType, cabinType, company, date,"0",arrTime,order);
 		for(int i=0;i<firstList.size();i++)
 		{
 			for(int j=0;j<secondList.size();j++)
@@ -272,7 +379,11 @@ public class FlightServiceImpl implements FlightService{
 					if(time>minTrans&&time<maxTrans)
 					{
 						//符合中转时间选项
-						list.add(new TransFlight(firstList.get(i),secondList.get(j),String.valueOf(time)));
+						Flight first=firstList.get(i);
+						Flight second=secondList.get(j);
+						Integer transPrice=first.getTruePrice()+second.getTruePrice();
+						Integer transDistance=first.getDistance()+second.getDistance();
+						list.add(new TransFlight(first,second,time,transPrice,transDistance));
 					}
 				} catch (ParseException e) {
 					e.printStackTrace();
@@ -285,7 +396,7 @@ public class FlightServiceImpl implements FlightService{
 	//未知中转城市情况
 	public List<TransFlight> getFlightWithoutTrans(String depCity, String depAirport, String arrCity, String arrAirport,
 			String flightType, String cabinType, String company, String date, String transCity,
-			String transAirport,String minTime,	String maxTime) 
+			String transAirport,String minTime,	String maxTime,String depTime,String arrTime,String order,String transRatio)
 	{
 		List<TransFlight> list=new ArrayList<>();		//存放结果集
 		Map<String,Integer> distanceMap=new HashMap<>();//存放各城市间距离信息
@@ -323,10 +434,13 @@ public class FlightServiceImpl implements FlightService{
 			if(firstDistance!=-1&&secondDistance!=-1)
 			{
 				int transDistance=firstDistance+secondDistance;
+				if(transRatio!=null&&!transRatio.equals("")) {
+					TRANS_DISTANCE_RATIO=Double.parseDouble(transRatio);
+				}
 				if(transDistance<(distanceMap.get(depCity+arrCity)*TRANS_DISTANCE_RATIO))
 				{
 					//符合距离条件
-					transList=getFlightByTrans(depCity, depAirport, arrCity, arrAirport, flightType, cabinType, company, date, city.getCode(),transAirport, minTime, maxTime);
+					transList=getFlightByTrans(depCity, depAirport, arrCity, arrAirport, flightType, cabinType, company, date, city.getCode(),transAirport, minTime, maxTime,depTime,arrTime,order,transRatio);
 				}
 			}
 			list.addAll(transList);
