@@ -32,7 +32,7 @@ public class FlightController {
 	@RequestMapping(value="/flight2")
 	public String getFlights(String data)
 	{
-		List<Flight> result = flightService.updateFlight(data,"","");
+		flightService.updateFlight(data,"","");
 		cityDistanceService.updateCityDistance();
 		return "index";
 	}
@@ -56,13 +56,13 @@ public class FlightController {
 	{
 		depCity=depCity.substring(depCity.length()-3);
 		arrCity=arrCity.substring(arrCity.length()-3);
-		if(depAirport!=null&&depAirport.length()>3) {
+		if(depAirport!=null&&depAirport.length()>=3) {
 			depAirport=depAirport.substring(depAirport.length()-3);
 		}
-		if(arrAirport!=null&&arrAirport.length()>3) {
+		if(arrAirport!=null&&arrAirport.length()>=3) {
 			arrAirport=arrAirport.substring(arrAirport.length()-3);
 		}
-		if(company!=null&&company.length()>2) {
+		if(company!=null&&company.length()>=2) {
 			company=company.substring(company.length()-2);
 		}
 		return flightService.getFlight(depCity, depAirport, arrCity,arrAirport, 
@@ -79,31 +79,31 @@ public class FlightController {
 		/*
 		 * depCity,arrCity,transCity:			出发/到达/中转城市，如 北京BJS
 		 * depAirport,arrAirport,transAirport:	出发/到达/中转机场，如 首都国际机场PEK
-		 * flightType：							飞机类型，大型机|中型机
-		 * cabinType:							舱位类型，经济舱|头等舱
+		 * flightType：							飞机类型，2表大型机，1表中型机，0表小型机
+		 * cabinType:							舱位类型，0表经济舱，1表头等舱
 		 * company:								航空公司，如 南方航空CZ
 		 * date:								出发日期，如 2018-06-04
 		 * minTime:								中转最小时间，默认45分钟
 		 * maxTime:								中转最大时间，默认120分钟
 		 * depTime,arrTime:						出发/到达时间段，0表不限，1表00:00-06:00,2表06:00-12:00,3表12:00-18:00,4表18:00-24:00
-		 * order:								排序方式,0表按价格排序，1表中转时间排序，2表中转距离排序
+		 * order:								排序方式,0表按价格排序，1表中转时间排序，2表中转距离排序，3表出发时间排序
 		 * transRatio:							中转总距离和直飞距离的比值，默认1.6 
 		 */
 		depCity=depCity.substring(depCity.length()-3);
 		arrCity=arrCity.substring(arrCity.length()-3);
-		if(depAirport!=null&&depAirport.length()>3) {
+		if(depAirport!=null&&depAirport.length()>=3) {
 			depAirport=depAirport.substring(depAirport.length()-3);
 		}
-		if(arrAirport!=null&&arrAirport.length()>3) {
+		if(arrAirport!=null&&arrAirport.length()>=3) {
 			arrAirport=arrAirport.substring(arrAirport.length()-3);
 		}
-		if(company!=null&&company.length()>2) {
+		if(company!=null&&company.length()>=2) {
 			company=company.substring(company.length()-2);
 		}
-		if(transCity!=null&&transCity.length()>3) {
+		if(transCity!=null&&transCity.length()>=3) {
 			transCity=transCity.substring(transCity.length()-3);
 		}
-		if(transAirport!=null&&transAirport.length()>3) {
+		if(transAirport!=null&&transAirport.length()>=3) {
 			transAirport=transAirport.substring(transAirport.length()-3);
 		}
 		return flightService.getTransFlight(depCity, depAirport, arrCity,arrAirport,

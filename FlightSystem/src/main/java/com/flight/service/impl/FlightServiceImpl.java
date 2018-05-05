@@ -70,7 +70,7 @@ public class FlightServiceImpl implements FlightService{
 		List<Flight> list=new ArrayList<>();
 		String pageUrl=FLIGHT_API+FLIGHT_DCITY+depCity+FLIGHT_ACITY+arrCity+FLIGHT_DATE+date+FLIGHT_PARAM;
 		String json =depCity;//HttpClientUtil.doGet(pageUrl).trim();
-		json=json.substring(24, json.length()-4).trim();
+		json=json.substring(22, json.length()-4).trim();
         JSONObject result =JSON.parseObject(json);
         if(result.getInteger("error")==0)//有相应数据
         {
@@ -85,17 +85,17 @@ public class FlightServiceImpl implements FlightService{
 	        Map<String, String> companyMap=new HashMap<>();//航空公司及对应的公司缩写
 	        Map<String, String> airportMap=new HashMap<>();//飞机场名称及对应的缩写
 	        
-	        JSONArray smallPlane = planes.getJSONArray("small");
+	        JSONArray smallPlane = planes.getJSONArray("small");//小型机
 	        for (int i = 0; i < smallPlane.size(); i++) {
-				planeMap.put(smallPlane.getString(i),"小型机");
+				planeMap.put(smallPlane.getString(i),"0");
 			} 
-	        JSONArray middlePlane = planes.getJSONArray("middle");
+	        JSONArray middlePlane = planes.getJSONArray("middle");//中型机
 	        for (int i = 0; i < middlePlane.size(); i++) {
-				planeMap.put(middlePlane.getString(i),"中型机");
+				planeMap.put(middlePlane.getString(i),"1");
 			} 
-	        JSONArray largePlane = planes.getJSONArray("large");
+	        JSONArray largePlane = planes.getJSONArray("large");//大型机
 	        for (int i = 0; i < largePlane.size(); i++) {
-				planeMap.put(largePlane.getString(i),"大型机");
+				planeMap.put(largePlane.getString(i),"2");
 			}
 	        
 	        for (String company : companys.keySet()) {
@@ -130,7 +130,8 @@ public class FlightServiceImpl implements FlightService{
 				f.setFlightCode(flight.getString("flightNo"));
 				f.setPlaneType(flight.getString("flightType"));
 				f.setStop(flight.getIntValue("stop"));
-				f.setFlightType(planeMap.get(f.getPlaneType()));
+				String flightType=planeMap.get(f.getPlaneType());
+				f.setFlightType(flightType==null?"0":flightType);
 				
 				try {
 					Date date1 = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(depTime);
@@ -149,7 +150,7 @@ public class FlightServiceImpl implements FlightService{
 				f.setBasePrice(cabin.getIntValue("basicCabinPrice"));
 				f.setDiscount(cabin.getIntValue("bestDiscount"));
 				f.setTruePrice(cabin.getIntValue("bestPrice"));
-				f.setCabinType(cabin.getString("specialType").indexOf("经济")==-1?"头等舱":"经济舱");
+				f.setCabinType(cabin.getString("specialType").indexOf("经济")==-1?"1":"0");
 				f.setComment(cabin.getString("specialAttributes"));
 				if(cabin.getString("cabinNum")!=null) {
 					f.setTicketNum(Integer.parseInt(cabin.getString("cabinNum")));
@@ -167,14 +168,14 @@ public class FlightServiceImpl implements FlightService{
 	}
 
 
-	//用于自动添加数据到数据库，不过使用for循环频繁调用数据接口会导致调用接口失效，
+	//用于自动添加数据到数据库，不过使用for循环频繁调用数据接口会导致接口限制，
 	@Override
 	public boolean updateData() {
 		CityExample example=new CityExample();
 		example.setDistinct(true);
 		List<City> citys = cityMapper.selectByExample(example);
 		int len=3;//citys.size();
-		String date="2018-04-23";
+		String date="2018-05-23";
 		for(int i=0;i<len;i++)
 		{
 			for(int j=0;j<len;j++)
@@ -252,7 +253,7 @@ public class FlightServiceImpl implements FlightService{
 				arrMin=0;arrMax=1440;break;
 		}
 		//排除不符合时间段的航班记录
-		List<Flight> removeList=new ArrayList<>();
+		List<Flight> removeList=new ArrayList<>(); 
 		for (int i = 0; i < list.size(); i++) {
 			Flight f=list.get(i);
 			int dep=Integer.parseInt(f.getDepTime().substring(0, 2))*60+Integer.parseInt(f.getDepTime().substring(3,5));
@@ -264,30 +265,42 @@ public class FlightServiceImpl implements FlightService{
 		list.removeAll(removeList);
 		//排序
 		switch (order) {
-		case "1"://时间排序
-			Collections.sort(list, new Comparator<Flight>() {  
-	            @Override  
-	            public int compare(Flight f1, Flight f2) {  
-	                int i = f1.getTimeUse()-f2.getTimeUse();
-	                if(i == 0){  
-	                	return f1.getTruePrice()-f2.getTruePrice();
-	                }  
-	                return i;  
-	            }  
-	        });  
-			break;
-		default://价格排序
-			Collections.sort(list, new Comparator<Flight>() {  
-	            @Override  
-	            public int compare(Flight f1, Flight f2) {  
-	                int i = f1.getTruePrice()-f2.getTruePrice();
-	                if(i == 0){  
-	                	return f1.getTimeUse()-f2.getTimeUse();
-	                }  
-	                return i;  
-	            }  
-	        });  
-			break;
+			case "1"://飞行时间排序
+				Collections.sort(list, new Comparator<Flight>() {  
+		            @Override  
+		            public int compare(Flight f1, Flight f2) {  
+		                int i = f1.getTimeUse()-f2.getTimeUse();
+		                if(i == 0){  
+		                	return f1.getTruePrice()-f2.getTruePrice();
+		                }  
+		                return i;  
+		            }  
+		        });  
+				break;
+//			case "2"://出发时间排序
+//				Collections.sort(list, new Comparator<Flight>() {  
+//		            @Override  
+//		            public int compare(Flight f1, Flight f2) {  
+//		                int i = f1.getDepTime()-f2.getDepTime();
+//		                if(i == 0){  
+//		                	return f1.getTruePrice()-f2.getTruePrice();
+//		                }  
+//		                return i;  
+//		            }  
+//		        });  
+//				break;
+			default://价格排序
+				Collections.sort(list, new Comparator<Flight>() {  
+		            @Override  
+		            public int compare(Flight f1, Flight f2) {  
+		                int i = f1.getTruePrice()-f2.getTruePrice();
+		                if(i == 0){  
+		                	return f1.getTimeUse()-f2.getTimeUse();
+		                }  
+		                return i;  
+		            }  
+		        });  
+				break;
 	}
 		return list;
 	}
@@ -446,5 +459,16 @@ public class FlightServiceImpl implements FlightService{
 			list.addAll(transList);
 		}
 		return list;
+	}
+
+
+	@Override
+	public Flight getFlightByCode(String flightCode) {
+		FlightExample example = new FlightExample();
+		example.setDistinct(true);
+		Criteria criteria = example.createCriteria();
+		criteria.andFlightCodeEqualTo(flightCode.trim());
+		List<Flight> flight = flightMapper.selectByExample(example);
+		return flight.get(0);
 	}
 }

@@ -24,9 +24,9 @@ public class AirportController {
 	public List<String> getAirportByCity(@RequestParam String city)
 	{
 		//根据城市查找机场：http://localhost:8080/FlightSystem/getAirportByCity?city=北京BJS
-		if(city!=null&&city.length()>3) {
+		if(city!=null&&city.length()>=3) {
 			city=city.trim();
-			city=city.substring(0, city.length()-3).trim();
+			city=city.substring(city.length()-3).trim();
 		}
 		return airportService.getAirportByCity(city);
 	}

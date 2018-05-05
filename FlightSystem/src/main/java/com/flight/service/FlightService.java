@@ -17,4 +17,6 @@ public interface FlightService {
 	public List<TransFlight> getTransFlight(String depCity,String depAirport,String arrCity,String arrAirport,
 			String flightType,String cabinType,String company,String date,String transCity,String transAirport,
 			String minTime,String maxTime,String depTime,String arrTime,String order,String transRatio);
+	
+	public Flight getFlightByCode(String flightCode);
 }
